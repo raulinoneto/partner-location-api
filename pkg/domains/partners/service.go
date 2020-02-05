@@ -14,6 +14,10 @@ func NewService(repo PartnerRepository) *ServicePartner {
 	return &ServicePartner{repo}
 }
 
-func (ps *ServicePartner) CreatePartner(_ *Partner) error {
-	return nil
+func (ps *ServicePartner) CreatePartner(_ *Partner) (*Partner, error) {
+	return nil, nil
+}
+
+func (ps *ServicePartner) GetPartner(_ int) (*Partner, error) {
+	return nil, nil
 }
