@@ -1,13 +1,8 @@
 package partners
 
 import (
-	"errors"
 	"testing"
 )
-
-var nilPartnerError = errors.New("nil partner, cannot save")
-var invalidIdError = errors.New("invalid partner id")
-var invalidCoordError = errors.New("invalid coordinates")
 
 type ServicePartnerMock struct{}
 
@@ -17,8 +12,8 @@ func (spm *ServicePartnerMock) SavePartner(p *Partner) error {
 	}
 	return nil
 }
-func (spm *ServicePartnerMock) GetPartner(id int) (*Partner, error) {
-	if id <= 0 {
+func (spm *ServicePartnerMock) GetPartner(id string) (*Partner, error) {
+	if len(id) <= 0 {
 		return nil, invalidIdError
 	}
 	return &Partner{ID: id}, nil
@@ -61,19 +56,19 @@ func TestServicePartner_CreatePartner(t *testing.T) {
 }
 
 type getPartnerTestCase struct {
-	id      int
+	id      string
 	partner *Partner
 	error   error
 }
 
 var getTestCases = map[string]getPartnerTestCase{
 	"Success GetPartner": {
-		1,
-		&Partner{ID: 1},
+		"1",
+		&Partner{ID: "1"},
 		nil,
 	},
 	"Error GetPartner": {
-		0,
+		"",
 		nil,
 		invalidIdError,
 	},

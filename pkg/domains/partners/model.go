@@ -3,7 +3,7 @@ package partners
 import "encoding/json"
 
 type Partner struct {
-	ID           int          `json:"id"`
+	ID           string       `json:"id"`
 	TradingName  string       `json:"tradingName"`
 	OwnerName    string       `json:"ownerName"`
 	Document     string       `json:"document"`
