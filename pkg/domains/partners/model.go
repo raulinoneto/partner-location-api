@@ -26,6 +26,10 @@ type Point struct {
 	Longitude float64 `json:"lng"`
 }
 
+type Pdvs struct {
+	Pdvs []Partner `json:"pdvs"`
+}
+
 type Coordinates [][][][]int64
 
 func UnmarshalPartner(data []byte) (Partner, error) {

@@ -47,10 +47,10 @@ func (ps *ServicePartner) GetPartner(id string) (*Partner, error) {
 	return partner, nil
 }
 
-func (ps *ServicePartner) SearchPartners(point *Point) ([]Partner, error) {
+func (ps *ServicePartner) SearchPartners(point *Point) (*Pdvs, error) {
 	partners, err := ps.repo.SearchPartners(point)
 	if err != nil {
 		return nil, err
 	}
-	return partners, nil
+	return &Pdvs{partners}, nil
 }

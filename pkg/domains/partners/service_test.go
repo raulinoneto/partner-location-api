@@ -115,7 +115,7 @@ func TestServicePartner_SearchPartner(t *testing.T) {
 		if err != tCase.error {
 			t.Errorf("case: %s\n expected: %+e\n got: %+e\n", caseName, tCase.error, err)
 		}
-		if len(caseResult) != tCase.length {
+		if caseResult != nil && len(caseResult.Pdvs) != tCase.length {
 			t.Errorf("case: %s\n expected length: %d\n got: %+v\n", caseName, tCase.length, caseResult)
 		}
 	}
