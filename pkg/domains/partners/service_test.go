@@ -7,19 +7,19 @@ import (
 
 type repoPartnerMock struct{}
 
-func (spm *repoPartnerMock) SavePartner(p *Partner) error {
+func (rpm *repoPartnerMock) SavePartner(p *Partner) error {
 	if p == nil {
 		return nilPartnerError
 	}
 	return nil
 }
-func (spm *repoPartnerMock) GetPartner(id string) (*Partner, error) {
+func (rpm *repoPartnerMock) GetPartner(id string) (*Partner, error) {
 	if len(id) <= 0 {
 		return nil, invalidIdError
 	}
 	return &Partner{ID: id}, nil
 }
-func (spm *repoPartnerMock) SearchPartners(point *Point) ([]Partner, error) {
+func (rpm *repoPartnerMock) SearchPartners(point *Point) ([]Partner, error) {
 	if point == nil {
 		return nil, invalidPointError
 	}
