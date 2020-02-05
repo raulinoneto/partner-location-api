@@ -36,8 +36,15 @@ func (ps *ServicePartner) CreatePartner(p *Partner) (*Partner, error) {
 	return p, nil
 }
 
-func (ps *ServicePartner) GetPartner(_ string) (*Partner, error) {
-	return nil, nil
+func (ps *ServicePartner) GetPartner(id string) (*Partner, error) {
+	if len(id) == 0 {
+		return nil, invalidIdError
+	}
+	partner, err := ps.repo.GetPartner(id)
+	if err != nil {
+		return nil, err
+	}
+	return partner, nil
 }
 
 func (ps *ServicePartner) SearchPartners(_ Coordinates) ([]Partner, error) {

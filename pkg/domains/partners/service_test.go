@@ -1,24 +1,25 @@
 package partners
 
 import (
+	"github.com/raulinoneto/partner-location-api/pkg/helpers"
 	"testing"
 )
 
-type ServicePartnerMock struct{}
+type repoPartnerMock struct{}
 
-func (spm *ServicePartnerMock) SavePartner(p *Partner) error {
+func (spm *repoPartnerMock) SavePartner(p *Partner) error {
 	if p == nil {
 		return nilPartnerError
 	}
 	return nil
 }
-func (spm *ServicePartnerMock) GetPartner(id string) (*Partner, error) {
+func (spm *repoPartnerMock) GetPartner(id string) (*Partner, error) {
 	if len(id) <= 0 {
 		return nil, invalidIdError
 	}
 	return &Partner{ID: id}, nil
 }
-func (spm *ServicePartnerMock) SearchPartners(coords Coordinates) ([]Partner, error) {
+func (spm *repoPartnerMock) SearchPartners(coords Coordinates) ([]Partner, error) {
 	if coords == nil {
 		return nil, invalidCoordError
 	}
@@ -43,7 +44,7 @@ var createTestCases = map[string]createPartnerTestCase{
 }
 
 func TestServicePartner_CreatePartner(t *testing.T) {
-	svc := NewService(new(ServicePartnerMock))
+	svc := NewService(new(repoPartnerMock))
 	for caseName, tCase := range createTestCases {
 		caseResult, err := svc.CreatePartner(tCase.payload)
 		if err != tCase.error {
@@ -75,13 +76,13 @@ var getTestCases = map[string]getPartnerTestCase{
 }
 
 func TestServicePartner_GetPartner(t *testing.T) {
-	svc := NewService(new(ServicePartnerMock))
+	svc := NewService(new(repoPartnerMock))
 	for caseName, tCase := range getTestCases {
 		caseResult, err := svc.GetPartner(tCase.id)
 		if err != tCase.error {
 			t.Errorf("case: %s\n expected: %+e\n got: %+e\n", caseName, tCase.error, err)
 		}
-		if caseResult != tCase.partner {
+		if caseResult != nil && helpers.PointerDeepEqual(*caseResult, *tCase.partner) {
 			t.Errorf("case: %s\n expected: %+v\n got: %+v\n", caseName, tCase.partner, caseResult)
 		}
 	}
@@ -104,7 +105,7 @@ var searchTestCases = map[string]searchPartnerTestCase{
 }
 
 func TestServicePartner_SearchPartner(t *testing.T) {
-	svc := NewService(new(ServicePartnerMock))
+	svc := NewService(new(repoPartnerMock))
 	for caseName, tCase := range searchTestCases {
 		coords := make(Coordinates, tCase.length)
 		caseResult, err := svc.SearchPartners(coords)
