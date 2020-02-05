@@ -21,3 +21,7 @@ func (ps *ServicePartner) CreatePartner(_ *Partner) (*Partner, error) {
 func (ps *ServicePartner) GetPartner(_ int) (*Partner, error) {
 	return nil, nil
 }
+
+func (ps *ServicePartner) SearchPartners(_ Coordinates) ([]Partner, error) {
+	return nil, nil
+}

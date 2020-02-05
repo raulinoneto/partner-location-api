@@ -91,3 +91,33 @@ func TestServicePartner_GetPartner(t *testing.T) {
 		}
 	}
 }
+
+type searchPartnerTestCase struct {
+	length int
+	error  error
+}
+
+var searchTestCases = map[string]searchPartnerTestCase{
+	"Success GetPartner": {
+		3,
+		nil,
+	},
+	"Error GetPartner": {
+		0,
+		invalidCoordError,
+	},
+}
+
+func TestServicePartner_SearchPartner(t *testing.T) {
+	svc := NewService(new(ServicePartnerMock))
+	for caseName, tCase := range searchTestCases {
+		coords := make(Coordinates, tCase.length)
+		caseResult, err := svc.SearchPartners(coords)
+		if err != tCase.error {
+			t.Errorf("case: %s\n expected: %+e\n got: %+e\n", caseName, tCase.error, err)
+		}
+		if len(caseResult) != tCase.length {
+			t.Errorf("case: %s\n expected length: %d\n got: %+v\n", caseName, tCase.length, caseResult)
+		}
+	}
+}
