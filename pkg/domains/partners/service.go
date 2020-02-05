@@ -8,12 +8,12 @@ import (
 
 var nilPartnerError = errors.New("nil partner, cannot save")
 var invalidIdError = errors.New("invalid partner id")
-var invalidCoordError = errors.New("invalid coordinates")
+var invalidPointError = errors.New("invalid coordinates")
 
 type PartnerRepository interface {
 	SavePartner(p *Partner) error
 	GetPartner(id string) (*Partner, error)
-	SearchPartners(coords Coordinates) ([]Partner, error)
+	SearchPartners(point *Point) ([]Partner, error)
 }
 
 type ServicePartner struct {
@@ -47,6 +47,10 @@ func (ps *ServicePartner) GetPartner(id string) (*Partner, error) {
 	return partner, nil
 }
 
-func (ps *ServicePartner) SearchPartners(_ Coordinates) ([]Partner, error) {
-	return nil, nil
+func (ps *ServicePartner) SearchPartners(point *Point) ([]Partner, error) {
+	partners, err := ps.repo.SearchPartners(point)
+	if err != nil {
+		return nil, err
+	}
+	return partners, nil
 }

@@ -19,11 +19,11 @@ func (spm *repoPartnerMock) GetPartner(id string) (*Partner, error) {
 	}
 	return &Partner{ID: id}, nil
 }
-func (spm *repoPartnerMock) SearchPartners(coords Coordinates) ([]Partner, error) {
-	if coords == nil {
-		return nil, invalidCoordError
+func (spm *repoPartnerMock) SearchPartners(point *Point) ([]Partner, error) {
+	if point == nil {
+		return nil, invalidPointError
 	}
-	partners := make([]Partner, len(coords))
+	partners := make([]Partner, int(point.Latitude))
 	return partners, nil
 }
 
@@ -100,15 +100,18 @@ var searchTestCases = map[string]searchPartnerTestCase{
 	},
 	"Error GetPartner": {
 		0,
-		invalidCoordError,
+		invalidPointError,
 	},
 }
 
 func TestServicePartner_SearchPartner(t *testing.T) {
 	svc := NewService(new(repoPartnerMock))
 	for caseName, tCase := range searchTestCases {
-		coords := make(Coordinates, tCase.length)
-		caseResult, err := svc.SearchPartners(coords)
+		var point *Point
+		if tCase.length > 0 {
+			point = &Point{Latitude: float64(tCase.length)}
+		}
+		caseResult, err := svc.SearchPartners(point)
 		if err != tCase.error {
 			t.Errorf("case: %s\n expected: %+e\n got: %+e\n", caseName, tCase.error, err)
 		}

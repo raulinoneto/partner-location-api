@@ -21,6 +21,11 @@ type CoverageArea struct {
 	Coordinates `json:"coordinates"`
 }
 
+type Point struct {
+	Latitude  float64 `json:"lat"`
+	Longitude float64 `json:"lng"`
+}
+
 type Coordinates [][][][]int64
 
 func UnmarshalPartner(data []byte) (Partner, error) {
