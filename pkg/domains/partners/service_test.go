@@ -1,7 +1,7 @@
 package partners
 
 import (
-	"github.com/raulinoneto/partner-location-api/pkg/helpers"
+	"reflect"
 	"testing"
 )
 
@@ -82,7 +82,7 @@ func TestServicePartner_GetPartner(t *testing.T) {
 		if err != tCase.error {
 			t.Errorf("case: %s\n expected: %+e\n got: %+e\n", caseName, tCase.error, err)
 		}
-		if caseResult != nil && helpers.PointerDeepEqual(*caseResult, *tCase.partner) {
+		if caseResult != nil && !reflect.DeepEqual(*caseResult, *tCase.partner) {
 			t.Errorf("case: %s\n expected: %+v\n got: %+v\n", caseName, tCase.partner, caseResult)
 		}
 	}
