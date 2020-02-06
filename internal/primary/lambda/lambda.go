@@ -2,10 +2,11 @@ package lambda
 
 import (
 	"encoding/json"
-	"github.com/aws/aws-lambda-go/events"
-	"github.com/raulinoneto/partner-location-api/internal/apierror"
 	"net/http"
 	"reflect"
+
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/raulinoneto/partner-location-api/internal/apierror"
 )
 
 type Request events.APIGatewayProxyRequest
