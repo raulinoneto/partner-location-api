@@ -1,22 +1,40 @@
 package dynamodbadapter
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
 	"github.com/raulinoneto/partner-location-api/pkg/domains/partners"
 )
 
 type AWSDocDBPartnerAdapter struct {
-	conn dynamodbiface.DynamoDBAPI
+	tableName string
+	conn      dynamodbiface.DynamoDBAPI
 }
 
-func NewAWSDocDBPartnerAdapter(conn dynamodbiface.DynamoDBAPI) *AWSDocDBPartnerAdapter {
+func NewAWSDocDBPartnerAdapter(tableName string, conn dynamodbiface.DynamoDBAPI) *AWSDocDBPartnerAdapter {
 	return &AWSDocDBPartnerAdapter{
+		tableName,
 		conn,
 	}
 }
 
-func (a *AWSDocDBPartnerAdapter) SavePartner(partner *partners.Partner) error {
-	return nil
+func (a *AWSDocDBPartnerAdapter) SavePartner(partner *partners.Partner) (*partners.Partner, error) {
+	item, err := dynamodbattribute.MarshalMap(&partner)
+	if err != nil {
+		return nil, err
+	}
+	input := &dynamodb.PutItemInput{
+		Item:      item,
+		TableName: aws.String(a.tableName),
+	}
+	result, err := a.conn.PutItem(input)
+	if err != nil {
+		return nil, err
+	}
+	err = dynamodbattribute.UnmarshalMap(result.Attributes, partner)
+	return partner, err
 }
 
 func (a *AWSDocDBPartnerAdapter) GetPartner(id string) (*partners.Partner, error) {

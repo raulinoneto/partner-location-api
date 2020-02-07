@@ -25,21 +25,21 @@ var (
 )
 
 func (d *DynamoDBAPIMock) PutItem(pi *dynamodb.PutItemInput) (*dynamodb.PutItemOutput, error) {
-	if pi == nil {
+	if len(pi.Item) <= 0 {
 		return nil, nilPutItemInput
 	}
 	return d.PutItemOutput, nil
 }
 
 func (d *DynamoDBAPIMock) GetItem(gi *dynamodb.GetItemInput) (*dynamodb.GetItemOutput, error) {
-	if gi == nil {
+	if len(gi.Key) <= 0 {
 		return nil, nilGetItemInput
 	}
 	return d.GetItemOutput, nil
 }
 
 func (d *DynamoDBAPIMock) Scan(si *dynamodb.ScanInput) (*dynamodb.ScanOutput, error) {
-	if si == nil {
+	if len(si.ExpressionAttributeValues) <= 0 {
 		return nil, nilScanInput
 	}
 	return d.ScanOutput, nil
@@ -53,9 +53,17 @@ type saveTestCase struct {
 
 var saveTestCases = map[string]saveTestCase{
 	"Success": {
-		payload: &partners.Partner{},
-		conn:    &DynamoDBAPIMock{PutItemOutput: &dynamodb.PutItemOutput{}},
-		err:     nil,
+		payload: &partners.Partner{ID: "test"},
+		conn: &DynamoDBAPIMock{
+			PutItemOutput: &dynamodb.PutItemOutput{
+				Attributes: map[string]*dynamodb.AttributeValue{
+					"id": {
+						S: aws.String("test"),
+					},
+				},
+			},
+		},
+		err: nil,
 	},
 	"Error": {
 		payload: nil,
@@ -66,10 +74,13 @@ var saveTestCases = map[string]saveTestCase{
 
 func TestAWSDocDBPartnerAdapter_SavePartner(t *testing.T) {
 	for caseName, tCase := range saveTestCases {
-		svc := NewAWSDocDBPartnerAdapter(tCase.conn)
-		err := svc.SavePartner(tCase.payload)
+		svc := NewAWSDocDBPartnerAdapter("test", tCase.conn)
+		caseResult, err := svc.SavePartner(tCase.payload)
 		if err != tCase.err {
 			t.Errorf("case: %s\n expected: %+e\n got: %+e\n", caseName, tCase.err, err)
+		}
+		if err == nil && caseResult != nil && caseResult.ID != tCase.payload.ID {
+			t.Errorf("case: %s\n expected: %+v\n got: %+v\n", caseName, *tCase.payload, *caseResult)
 		}
 	}
 }
@@ -106,13 +117,10 @@ var getTestCases = map[string]getTestCase{
 
 func TestAWSDocDBPartnerAdapter_GetPartner(t *testing.T) {
 	for caseName, tCase := range getTestCases {
-		svc := NewAWSDocDBPartnerAdapter(tCase.conn)
+		svc := NewAWSDocDBPartnerAdapter("test", tCase.conn)
 		caseResult, err := svc.GetPartner(tCase.payload)
 		if err != tCase.err {
 			t.Errorf("case: %s\n expected: %+e\n got: %+e\n", caseName, tCase.err, err)
-		}
-		if caseResult == nil {
-			t.Errorf("case: %s\n expected: %+v\n got: %+v\n", caseName, tCase.payload, caseResult)
 		}
 		if err == nil && caseResult != nil && reflect.DeepEqual(*caseResult, *tCase.expected) {
 			t.Errorf("case: %s\n expected: %+v\n got: %+v\n", caseName, tCase.payload, caseResult)
@@ -152,7 +160,7 @@ var searchTestCases = map[string]searchTestCase{
 
 func TestAWSDocDBPartnerAdapter_SearchPartners(t *testing.T) {
 	for caseName, tCase := range searchTestCases {
-		svc := NewAWSDocDBPartnerAdapter(tCase.conn)
+		svc := NewAWSDocDBPartnerAdapter("test", tCase.conn)
 		caseResult, err := svc.SearchPartners(tCase.payload)
 		if err != tCase.err {
 			t.Errorf("case: %s\n expected: %+e\n got: %+e\n", caseName, tCase.err, err)
