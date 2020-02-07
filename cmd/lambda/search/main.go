@@ -6,8 +6,8 @@ import (
 	"strconv"
 
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/raulinoneto/partner-location-api/internal/adapters/primary/lambdaadapter"
 	"github.com/raulinoneto/partner-location-api/internal/apierror"
-	"github.com/raulinoneto/partner-location-api/internal/primary/lambdaadapter"
 	"github.com/raulinoneto/partner-location-api/pkg/domains/partners"
 )
 
