@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/lambda"
@@ -11,13 +11,14 @@ import (
 )
 
 func handler(request lambdaadapter.Request) (lambdaadapter.Response, error) {
-	p := new(partners.Partner)
-	if err := json.Unmarshal([]byte(request.Body), p); err != nil {
+	pId, ok := request.PathParameters["partnerId"]
+	if !ok {
+		err := fmt.Errorf("the partnerId can't be empty")
 		err = apierror.NewWarning(http.StatusBadRequest, err.Error(), err)
 		return lambdaadapter.BuildBadRequestResponse(err), nil
 	}
 	service := partners.NewService(nil)
-	return lambdaadapter.BuildCreatedResponse(service.CreatePartner(p)), nil
+	return lambdaadapter.BuildCreatedResponse(service.GetPartner(pId)), nil
 }
 
 func main() {
