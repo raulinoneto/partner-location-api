@@ -23,7 +23,7 @@ func newResponse(status int, body string) Response {
 	}
 }
 
-func BuildResponse(status int, body interface{}, err error) Response {
+func buildResponse(status int, body interface{}, err error) Response {
 	if err != nil {
 		return asError(err)
 	}
@@ -46,9 +46,13 @@ func asError(errResponse error) Response {
 }
 
 func BuildCreatedResponse(body interface{}, err error) Response {
-	return BuildResponse(http.StatusCreated, body, err)
+	return buildResponse(http.StatusCreated, body, err)
 }
 
 func BuildOKResponse(body interface{}, err error) Response {
-	return BuildResponse(http.StatusOK, body, err)
+	return buildResponse(http.StatusOK, body, err)
+}
+
+func BuildBadRequestResponse(err error) Response {
+	return buildResponse(http.StatusBadRequest, err, nil)
 }

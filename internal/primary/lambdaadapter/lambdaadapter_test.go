@@ -2,10 +2,11 @@ package lambdaadapter
 
 import (
 	"errors"
-	"github.com/raulinoneto/partner-location-api/internal/apierror"
 	"net/http"
 	"reflect"
 	"testing"
+
+	"github.com/raulinoneto/partner-location-api/internal/apierror"
 )
 
 type TestPayload struct{ Test string }
@@ -40,7 +41,7 @@ var testCases = map[string]testCase{
 
 func TestBuildResponse(t *testing.T) {
 	for caseName, tCase := range testCases {
-		result := BuildResponse(tCase.status, tCase.body, tCase.err)
+		result := buildResponse(tCase.status, tCase.body, tCase.err)
 		if !reflect.DeepEqual(tCase.expected, result) {
 			t.Errorf("case: %s\n expected: %v\n got: %v\n", caseName, tCase.expected, result)
 		}
@@ -58,6 +59,15 @@ func TestBuildOKResponse(t *testing.T) {
 func TestBuildCreatedResponse(t *testing.T) {
 	expected := newResponse(http.StatusCreated, `{"Test":"Test"}`)
 	result := BuildCreatedResponse(&TestPayload{"Test"}, nil)
+	if !reflect.DeepEqual(expected, result) {
+		t.Errorf("expected: %v\n got: %v\n", expected, result)
+	}
+}
+
+func TestBuildBadRequestResponse(t *testing.T) {
+	expected := newResponse(http.StatusBadRequest, `{"statusCode":400,"message":"test","severity":1}`)
+	err := apierror.NewWarning(http.StatusBadRequest, "test", errors.New("test"))
+	result := BuildBadRequestResponse(err)
 	if !reflect.DeepEqual(expected, result) {
 		t.Errorf("expected: %v\n got: %v\n", expected, result)
 	}

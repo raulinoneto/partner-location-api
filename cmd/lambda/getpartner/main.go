@@ -15,7 +15,7 @@ func handler(request lambdaadapter.Request) (lambdaadapter.Response, error) {
 	if !ok {
 		err := fmt.Errorf("the partnerId can't be empty")
 		err = apierror.NewWarning(http.StatusBadRequest, err.Error(), err)
-		return lambdaadapter.BuildResponse(http.StatusBadRequest, nil, err), nil
+		return lambdaadapter.BuildBadRequestResponse(err), nil
 	}
 	service := partners.NewService(nil)
 	return lambdaadapter.BuildCreatedResponse(service.GetPartner(pId)), nil

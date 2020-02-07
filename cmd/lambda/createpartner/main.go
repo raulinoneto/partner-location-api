@@ -14,7 +14,7 @@ func handler(request lambdaadapter.Request) (lambdaadapter.Response, error) {
 	p := new(partners.Partner)
 	if err := json.Unmarshal([]byte(request.Body), p); err != nil {
 		err = apierror.NewWarning(http.StatusBadRequest, err.Error(), err)
-		return lambdaadapter.BuildResponse(0, nil, err), nil
+		return lambdaadapter.BuildBadRequestResponse(err), nil
 	}
 	service := partners.NewService(nil)
 	return lambdaadapter.BuildCreatedResponse(service.CreatePartner(p)), nil
