@@ -12,7 +12,7 @@ const (
 )
 
 type ApiError struct {
-	StatusCode int    `json:"status_code"`
+	StatusCode int    `json:"statusCode"`
 	Message    string `json:"message"`
 	Severity   int    `json:"severity"`
 	err        error
@@ -30,10 +30,10 @@ func NewCritical(message string, err error) *ApiError {
 	return &ApiError{http.StatusInternalServerError, message, Critical, err}
 }
 
-func NewWarning(status_code int, message string, err error) *ApiError {
-	return &ApiError{status_code, message, Warning, err}
+func NewWarning(statusCode int, message string, err error) *ApiError {
+	return &ApiError{statusCode, message, Warning, err}
 }
 
-func NewDebug(status_code int, message string, err error) *ApiError {
-	return &ApiError{status_code, message, Debug, err}
+func NewDebug(statusCode int, message string, err error) *ApiError {
+	return &ApiError{statusCode, message, Debug, err}
 }

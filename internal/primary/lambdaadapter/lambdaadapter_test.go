@@ -1,4 +1,4 @@
-package lambda
+package lambdaadapter
 
 import (
 	"errors"
@@ -9,6 +9,7 @@ import (
 )
 
 type TestPayload struct{ Test string }
+
 type testCase struct {
 	status   int
 	body     *TestPayload
@@ -43,5 +44,21 @@ func TestBuildResponse(t *testing.T) {
 		if !reflect.DeepEqual(tCase.expected, result) {
 			t.Errorf("case: %s\n expected: %v\n got: %v\n", caseName, tCase.expected, result)
 		}
+	}
+}
+
+func TestBuildOKResponse(t *testing.T) {
+	expected := newResponse(http.StatusOK, `{"Test":"Test"}`)
+	result := BuildOKResponse(&TestPayload{"Test"}, nil)
+	if !reflect.DeepEqual(expected, result) {
+		t.Errorf("expected: %v\n got: %v\n", expected, result)
+	}
+}
+
+func TestBuildCreatedResponse(t *testing.T) {
+	expected := newResponse(http.StatusCreated, `{"Test":"Test"}`)
+	result := BuildCreatedResponse(&TestPayload{"Test"}, nil)
+	if !reflect.DeepEqual(expected, result) {
+		t.Errorf("expected: %v\n got: %v\n", expected, result)
 	}
 }

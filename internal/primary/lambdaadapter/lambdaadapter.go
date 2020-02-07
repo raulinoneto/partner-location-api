@@ -1,4 +1,4 @@
-package lambda
+package lambdaadapter
 
 import (
 	"encoding/json"
@@ -43,4 +43,12 @@ func asError(errResponse error) Response {
 		return newResponse(http.StatusInternalServerError, err.Error())
 	}
 	return newResponse(errResponse.(*apierror.ApiError).StatusCode, string(errJson))
+}
+
+func BuildCreatedResponse(body interface{}, err error) Response {
+	return BuildResponse(http.StatusCreated, body, err)
+}
+
+func BuildOKResponse(body interface{}, err error) Response {
+	return BuildResponse(http.StatusOK, body, err)
 }

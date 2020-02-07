@@ -1,7 +1,5 @@
 package partners
 
-import "encoding/json"
-
 type Partner struct {
 	ID           string       `json:"id"`
 	TradingName  string       `json:"tradingName"`
@@ -31,13 +29,3 @@ type Pdvs struct {
 }
 
 type Coordinates [][][][]int64
-
-func UnmarshalPartner(data []byte) (Partner, error) {
-	var r Partner
-	err := json.Unmarshal(data, &r)
-	return r, err
-}
-
-func (r *Partner) Marshal() ([]byte, error) {
-	return json.Marshal(r)
-}

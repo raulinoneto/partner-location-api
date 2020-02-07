@@ -1,15 +1,21 @@
 package partners
 
 import (
+	"errors"
 	"reflect"
 	"testing"
 )
 
 type repoPartnerMock struct{}
 
+var genericError = errors.New("genericError")
+
 func (rpm *repoPartnerMock) SavePartner(p *Partner) error {
 	if p == nil {
 		return nilPartnerError
+	}
+	if p.TradingName == "error" {
+		return genericError
 	}
 	return nil
 }
@@ -17,14 +23,19 @@ func (rpm *repoPartnerMock) GetPartner(id string) (*Partner, error) {
 	if len(id) <= 0 {
 		return nil, invalidIdError
 	}
+	if id == "error" {
+		return nil, genericError
+	}
 	return &Partner{ID: id}, nil
 }
 func (rpm *repoPartnerMock) SearchPartners(point *Point) ([]Partner, error) {
 	if point == nil {
 		return nil, invalidPointError
 	}
-	partners := make([]Partner, int(point.Latitude))
-	return partners, nil
+	if point.Latitude == 1 {
+		return nil, genericError
+	}
+	return make([]Partner, int(point.Latitude)), nil
 }
 
 type createPartnerTestCase struct {
@@ -38,6 +49,10 @@ var createTestCases = map[string]createPartnerTestCase{
 		&Partner{},
 	},
 	"Error CreatePartner": {
+		genericError,
+		&Partner{TradingName: "error"},
+	},
+	"Error CreatePartner nil Partner": {
 		nilPartnerError,
 		nil,
 	},
@@ -50,7 +65,7 @@ func TestServicePartner_CreatePartner(t *testing.T) {
 		if err != tCase.error {
 			t.Errorf("case: %s\n expected: %+e\n got: %+e\n", caseName, tCase.error, err)
 		}
-		if caseResult != tCase.payload {
+		if err == nil && caseResult != tCase.payload {
 			t.Errorf("case: %s\n expected: %+v\n got: %+v\n", caseName, tCase.payload, caseResult)
 		}
 	}
@@ -69,6 +84,11 @@ var getTestCases = map[string]getPartnerTestCase{
 		nil,
 	},
 	"Error GetPartner": {
+		"error",
+		nil,
+		genericError,
+	},
+	"Error GetPartner Empty ID": {
 		"",
 		nil,
 		invalidIdError,
@@ -99,6 +119,10 @@ var searchTestCases = map[string]searchPartnerTestCase{
 		nil,
 	},
 	"Error GetPartner": {
+		1,
+		genericError,
+	},
+	"Error GetPartner nil Point": {
 		0,
 		invalidPointError,
 	},
