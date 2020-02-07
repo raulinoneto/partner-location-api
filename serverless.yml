@@ -1,0 +1,30 @@
+service: partners-api
+
+provider:
+  name: aws
+  runtime: go1.x
+  region: us-east-1
+  memory: 256
+  timeout: 30
+  endpointType: REGIONAL
+  stage: dev
+  tracing:
+    apiGateway: true
+    lambda: true
+  logs:
+    restApi: true
+  resourcePolicy:
+    - Effect : "Allow"
+      Principal: '*'
+      Action: execute-api:Invoke
+      Resource:
+        - execute-api:/*/*/*
+
+  apiKeys:
+    - name: API_KEY_${self:custom.stage}
+      value: ${ssm:/${self:custom.ssm.${self:custom.stage}, self:custom.ssm.default}/API_KEY~true}
+
+functions: ${file(serverless/functions.yml)}
+
+plugins:
+  - serverless-iam-roles-per-function
