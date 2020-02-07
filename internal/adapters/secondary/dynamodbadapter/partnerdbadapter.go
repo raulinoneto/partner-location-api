@@ -38,7 +38,25 @@ func (a *AWSDocDBPartnerAdapter) SavePartner(partner *partners.Partner) (*partne
 }
 
 func (a *AWSDocDBPartnerAdapter) GetPartner(id string) (*partners.Partner, error) {
-	return nil, nil
+	partner := new(partners.Partner)
+	query := &dynamodb.GetItemInput{
+		TableName: aws.String(a.tableName),
+		Key: map[string]*dynamodb.AttributeValue{
+			"id": {
+				S: aws.String(id),
+			},
+		},
+		ConsistentRead: aws.Bool(true),
+	}
+	result, err := a.conn.GetItem(query)
+	if err != nil {
+		return nil, err
+	}
+	if len(result.Item) < 1 {
+		return nil, err
+	}
+	err = dynamodbattribute.UnmarshalMap(result.Item, partner)
+	return partner, nil
 }
 
 func (a *AWSDocDBPartnerAdapter) SearchPartners(point *partners.Point) ([]partners.Partner, error) {

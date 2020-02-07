@@ -32,7 +32,7 @@ func (d *DynamoDBAPIMock) PutItem(pi *dynamodb.PutItemInput) (*dynamodb.PutItemO
 }
 
 func (d *DynamoDBAPIMock) GetItem(gi *dynamodb.GetItemInput) (*dynamodb.GetItemOutput, error) {
-	if len(gi.Key) <= 0 {
+	if len(*gi.Key["id"].S) <= 0 {
 		return nil, nilGetItemInput
 	}
 	return d.GetItemOutput, nil
@@ -122,7 +122,7 @@ func TestAWSDocDBPartnerAdapter_GetPartner(t *testing.T) {
 		if err != tCase.err {
 			t.Errorf("case: %s\n expected: %+e\n got: %+e\n", caseName, tCase.err, err)
 		}
-		if err == nil && caseResult != nil && reflect.DeepEqual(*caseResult, *tCase.expected) {
+		if err == nil && caseResult != nil && caseResult.ID != tCase.expected.ID {
 			t.Errorf("case: %s\n expected: %+v\n got: %+v\n", caseName, tCase.payload, caseResult)
 		}
 	}
