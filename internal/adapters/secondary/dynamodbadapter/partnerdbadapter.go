@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
 	"github.com/raulinoneto/partner-location-api/pkg/domains/partners"
+	"github.com/raulinoneto/partner-location-api/pkg/helpers"
 )
 
 type AWSDocDBPartnerAdapter struct {
@@ -14,6 +15,9 @@ type AWSDocDBPartnerAdapter struct {
 }
 
 func NewAWSDocDBPartnerAdapter(tableName string, conn dynamodbiface.DynamoDBAPI) *AWSDocDBPartnerAdapter {
+	if conn == nil {
+		conn = CreateDynamoSess()
+	}
 	return &AWSDocDBPartnerAdapter{
 		tableName,
 		conn,
@@ -25,6 +29,7 @@ func (a *AWSDocDBPartnerAdapter) SavePartner(partner *partners.Partner) (*partne
 	if err != nil {
 		return nil, err
 	}
+	partner.ID = helpers.GenerateUUID()
 	input := &dynamodb.PutItemInput{
 		Item:      item,
 		TableName: aws.String(a.tableName),

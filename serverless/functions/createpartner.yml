@@ -3,8 +3,8 @@ environment:
   STAGE: ${self:custom.ssm.${self:custom.stage}, self:custom.ssm.default}
 events:
   - http:
-      path: /partners/{partnerId}
-      method: get
+      path: /partners
+      method: post
       private: true
 iamRoleStatements:
   - Effect: "Allow"

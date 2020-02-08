@@ -2,8 +2,6 @@ package partners
 
 import (
 	"errors"
-
-	"github.com/raulinoneto/partner-location-api/pkg/helpers"
 )
 
 var nilPartnerError = errors.New("nil partner, cannot save")
@@ -11,7 +9,7 @@ var invalidIdError = errors.New("invalid partner id")
 var invalidPointError = errors.New("invalid coordinates")
 
 type PartnerRepository interface {
-	SavePartner(p *Partner) error
+	SavePartner(partner *Partner) (*Partner, error)
 	GetPartner(id string) (*Partner, error)
 	SearchPartners(point *Point) ([]Partner, error)
 }
@@ -28,8 +26,7 @@ func (ps *ServicePartner) CreatePartner(p *Partner) (*Partner, error) {
 	if p == nil {
 		return nil, nilPartnerError
 	}
-	p.ID = helpers.GenerateUUID()
-	err := ps.repo.SavePartner(p)
+	p, err := ps.repo.SavePartner(p)
 	if err != nil {
 		return nil, err
 	}

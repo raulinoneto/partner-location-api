@@ -9,7 +9,7 @@ events:
 iamRoleStatements:
   - Effect: "Allow"
     Action:
-      - dynamodb:PutItem
+      - dynamodb:Scan
     Resource:
       - Fn::GetAtt:
           - PartnersDynamoDbTable
