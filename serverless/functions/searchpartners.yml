@@ -1,10 +1,10 @@
-handler: bin/getpartner
+handler: bin/searchpartners
 environment:
   STAGE: ${self:custom.ssm.${self:custom.stage}, self:custom.ssm.default}
 events:
   - http:
-      path: /partners
-      method: post
+      path: /partners/search
+      method: get
       private: true
 iamRoleStatements:
   - Effect: "Allow"

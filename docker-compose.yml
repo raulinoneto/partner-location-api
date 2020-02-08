@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  app:
+    container_name: partners
+    build: ./docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/var/app
+    ports:
+      - 3000:3000
+    environment:
+      - VOLUME_APP=$PWD
+    networks:
+      partners-network:
+        ipv4_address: 10.0.2.10
+
+  dynamodb:
+    image: amazon/dynamodb-local
+    dns_search: .
+    command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodb/data
+    volumes:
+      - ./.data/dynamodb:/home/dynamodb/data
+    ports:
+      - 8000:8000
+    networks:
+      partners-network:
+        ipv4_address: 10.0.2.11
+
+networks:
+  partners-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.2.10/24
