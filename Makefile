@@ -11,7 +11,7 @@ test:
 	go test -coverpkg=./... ./...
 
 deploy:
-	docker exec -i partners-app serverless deploy
+	docker exec -i partners serverless deploy
 
 build-and-deploy:
 	make build;
@@ -23,3 +23,5 @@ install:
 run:
 	docker-compose up
 
+prune:
+	docker system prune -f -a

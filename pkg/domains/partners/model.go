@@ -28,4 +28,4 @@ type Pdvs struct {
 	Pdvs []Partner `json:"pdvs"`
 }
 
-type Coordinates [][][][]int64
+type Coordinates [][][][]float64
