@@ -10,14 +10,14 @@ type repoPartnerMock struct{}
 
 var genericError = errors.New("genericError")
 
-func (rpm *repoPartnerMock) SavePartner(p *Partner) error {
+func (rpm *repoPartnerMock) SavePartner(p *Partner) (*Partner, error) {
 	if p == nil {
-		return nilPartnerError
+		return nil, nilPartnerError
 	}
 	if p.TradingName == "error" {
-		return genericError
+		return nil, genericError
 	}
-	return nil
+	return p, nil
 }
 func (rpm *repoPartnerMock) GetPartner(id string) (*Partner, error) {
 	if len(id) <= 0 {

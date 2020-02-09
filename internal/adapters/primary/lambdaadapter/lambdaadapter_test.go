@@ -65,7 +65,7 @@ func TestBuildCreatedResponse(t *testing.T) {
 }
 
 func TestBuildBadRequestResponse(t *testing.T) {
-	expected := newResponse(http.StatusBadRequest, `{"statusCode":400,"message":"test","severity":1}`)
+	expected := newResponse(http.StatusBadRequest, `{"status_code":400,"message":"test","severity":1}`)
 	err := apierror.NewWarning(http.StatusBadRequest, "test", errors.New("test"))
 	result := BuildBadRequestResponse(err)
 	if !reflect.DeepEqual(expected, result) {

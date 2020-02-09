@@ -9,27 +9,29 @@ import (
 	"github.com/raulinoneto/partner-location-api/pkg/helpers"
 )
 
-type AWSDocDBPartnerAdapter struct {
+type AWSDynamoDBPartnerAdapter struct {
 	tableName string
 	conn      dynamodbiface.DynamoDBAPI
 }
 
-func NewAWSDocDBPartnerAdapter(tableName string, conn dynamodbiface.DynamoDBAPI) *AWSDocDBPartnerAdapter {
+func NewAWSDocDBPartnerAdapter(tableName string, conn dynamodbiface.DynamoDBAPI) *AWSDynamoDBPartnerAdapter {
 	if conn == nil {
 		conn = CreateDynamoSess()
 	}
-	return &AWSDocDBPartnerAdapter{
+	return &AWSDynamoDBPartnerAdapter{
 		tableName,
 		conn,
 	}
 }
 
-func (a *AWSDocDBPartnerAdapter) SavePartner(partner *partners.Partner) (*partners.Partner, error) {
-	item, err := dynamodbattribute.MarshalMap(&partner)
+func (a *AWSDynamoDBPartnerAdapter) SavePartner(partner *partners.Partner) (*partners.Partner, error) {
+	if partner != nil {
+		partner.ID = helpers.GenerateUUID()
+	}
+	item, err := dynamodbattribute.MarshalMap(partner)
 	if err != nil {
 		return nil, err
 	}
-	partner.ID = helpers.GenerateUUID()
 	input := &dynamodb.PutItemInput{
 		Item:      item,
 		TableName: aws.String(a.tableName),
@@ -42,7 +44,7 @@ func (a *AWSDocDBPartnerAdapter) SavePartner(partner *partners.Partner) (*partne
 	return partner, err
 }
 
-func (a *AWSDocDBPartnerAdapter) GetPartner(id string) (*partners.Partner, error) {
+func (a *AWSDynamoDBPartnerAdapter) GetPartner(id string) (*partners.Partner, error) {
 	partner := new(partners.Partner)
 	query := &dynamodb.GetItemInput{
 		TableName: aws.String(a.tableName),
@@ -64,6 +66,6 @@ func (a *AWSDocDBPartnerAdapter) GetPartner(id string) (*partners.Partner, error
 	return partner, nil
 }
 
-func (a *AWSDocDBPartnerAdapter) SearchPartners(point *partners.Point) ([]partners.Partner, error) {
+func (a *AWSDynamoDBPartnerAdapter) SearchPartners(point *partners.Point) ([]partners.Partner, error) {
 	return nil, nil
 }
