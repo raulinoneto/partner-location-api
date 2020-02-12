@@ -3,13 +3,13 @@ environment:
   STAGE: ${self:custom.ssm.${self:custom.stage}, self:custom.ssm.default}
 events:
   - http:
-      path: /partners
-      method: post
+      path: /partners/{partnerId}
+      method: get
       private: true
 iamRoleStatements:
   - Effect: "Allow"
     Action:
-      - dynamodb:PutItem
+      - dynamodb:GetItem
     Resource:
       - Fn::GetAtt:
           - PartnersDynamoDbTable

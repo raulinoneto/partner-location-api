@@ -12,7 +12,7 @@ const (
 )
 
 type ApiError struct {
-	StatusCode int    `json:"statusCode"`
+	StatusCode int    `json:"status_code"`
 	Message    string `json:"message"`
 	Severity   int    `json:"severity"`
 	err        error
