@@ -28,7 +28,7 @@ func (rpm *repoPartnerMock) GetPartner(id string) (*Partner, error) {
 	}
 	return &Partner{ID: id}, nil
 }
-func (rpm *repoPartnerMock) SearchPartners(point *Point) ([]Partner, error) {
+func (rpm *repoPartnerMock) SearchPartner(point *Point) ([]Partner, error) {
 	if point == nil {
 		return nil, invalidPointError
 	}

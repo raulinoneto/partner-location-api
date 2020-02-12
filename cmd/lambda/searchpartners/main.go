@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/raulinoneto/partner-location-api/internal/adapters/secondary/dynamodbadapter"
+	"github.com/raulinoneto/partner-location-api/internal/adapters/secondary/mongodbadapter"
 	"net/http"
 	"os"
 	"strconv"
@@ -19,12 +19,16 @@ var (
 )
 
 func handler(request lambdaadapter.Request) (lambdaadapter.Response, error) {
-	point, err := getPointByQueryParams(request.QueryStringParameters)
+	point, err := getPointByQueryParams(request.PathParameters)
 	if err != nil {
 		return lambdaadapter.BuildBadRequestResponse(err), nil
 	}
 	service := partners.NewService(
-		dynamodbadapter.NewAWSDocDBPartnerAdapter(os.Getenv("PARTNERS_TABLE_NAME"), nil),
+		mongodbadapter.NewMongoDBPartnerAdapter(
+			os.Getenv("DB_NAME"),
+			os.Getenv("PARTNERS_TABLE_NAME"),
+			nil,
+		),
 	)
 	return lambdaadapter.BuildCreatedResponse(service.SearchPartners(point)), nil
 }

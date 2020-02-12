@@ -3,7 +3,7 @@ environment:
   STAGE: ${self:custom.ssm.${self:custom.stage}, self:custom.ssm.default}
 events:
   - http:
-      path: /partners/search
+      path: /partners/lat/{lat}/lng/{lng}
       method: get
       private: true
 iamRoleStatements:
