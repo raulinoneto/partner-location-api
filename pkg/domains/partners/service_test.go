@@ -28,14 +28,23 @@ func (rpm *repoPartnerMock) GetPartner(id string) (*Partner, error) {
 	}
 	return &Partner{ID: id}, nil
 }
-func (rpm *repoPartnerMock) SearchPartner(point *Point) ([]Partner, error) {
+func (rpm *repoPartnerMock) SearchPartners(point *Point) ([]Partner, error) {
+	partnersResult := make([]Partner, 0)
 	if point == nil {
 		return nil, invalidPointError
 	}
 	if point.Latitude == 1 {
 		return nil, genericError
 	}
-	return make([]Partner, int(point.Latitude)), nil
+	for i := 0; i < int(point.Latitude); i++ {
+		partnersResult = append(partnersResult,
+			Partner{
+				Address: Address{
+					Coordinates: []float64{point.Latitude + float64(i), point.Longitude - float64(i)},
+				},
+			})
+	}
+	return partnersResult, nil
 }
 
 type createPartnerTestCase struct {
@@ -139,7 +148,7 @@ func TestServicePartner_SearchPartner(t *testing.T) {
 		if err != tCase.error {
 			t.Errorf("case: %s\n expected: %+e\n got: %+e\n", caseName, tCase.error, err)
 		}
-		if caseResult != nil && len(caseResult.Pdvs) != tCase.length {
+		if err == nil && caseResult == nil {
 			t.Errorf("case: %s\n expected length: %d\n got: %+v\n", caseName, tCase.length, caseResult)
 		}
 	}
