@@ -14,12 +14,13 @@ Ps.: Observe the disponibility of ips at your docker network.
 
 Just run ``make deploy``
 
-### Technologies Choices
+### Technologies and Paterns
 
 * GoLang
 * Docker 
 * MongoDB
 * Lambda-local
+* Hexagonal Architecture (Ports and Adapters)
 
 Endpoints
 ---
