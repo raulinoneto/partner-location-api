@@ -1,0 +1,6 @@
+createpartner:
+  ${file(serverless/functions/createpartner.yml)}
+getpartner:
+  ${file(serverless/functions/getpartner.yml)}
+searchpartners:
+  ${file(serverless/functions/searchpartners.yml)}

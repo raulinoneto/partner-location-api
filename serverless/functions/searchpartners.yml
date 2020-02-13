@@ -1,0 +1,22 @@
+handler: bin/searchpartners
+environment:
+  STAGE: ${self:custom.ssm.${self:custom.stage}, self:custom.ssm.default}
+events:
+  - http:
+      path: /partners/lat/{lat}/lng/{lng}
+      method: get
+      private: true
+iamRoleStatements:
+  - Effect: "Allow"
+    Action:
+      - dynamodb:Scan
+    Resource:
+      - Fn::GetAtt:
+          - PartnersDynamoDbTable
+          - Arn
+  - Effect: "Allow" # xray permissions (required)
+    Action:
+      - "xray:PutTraceSegments"
+      - "xray:PutTelemetryRecords"
+    Resource:
+      - "*"
